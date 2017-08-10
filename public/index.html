@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Prototyping with Sensors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="container" style="min-width: 310px; height: 100%; margin: 0 auto"></div>
+
+    <script>
+        window.$ = window.jQuery = require('jquery');
+        const Highcharts = require('highcharts');
+        const ipcRenderer = require('electron').ipcRenderer;
+        // document.write('<p>myvar: ' + remote.getGlobal('sharedObj').myvar + '</p>');
+        $(document).ready(function(){
+            // Initialize variables
+            var connected = false;
+
+            var addData = function(data) {};
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            });
+
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'spline',
+                    animation: false,
+                    marginRight: 10,
+                    events: {
+                        load: function() {
+                            // set up the updating of the chart
+                            var series = this.series[0];
+                            addData = function(d) {
+                                var x = (new Date()).getTime(), // current time
+                                    y = +d;
+                                series.addPoint([x, y], true, true);
+                            };
+                        }
+                    }
+                },
+                title: {
+                    text: 'EKG Data'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+                },
+                yAxis: {
+                    title: {
+                        text: 'Output Value'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                // tooltip: {
+                //     formatter: function() {
+                //         return '<b>' + this.series.name + '</b><br/>' +
+                //             Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                //             Highcharts.numberFormat(this.y, 2);
+                //     }
+                // },
+                tooltip: false,
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                },
+                series: [{
+                    name: 'EKG',
+                    data: ((new Array(100)).fill({ x: (new Date()).getTime(), y: 0 }))
+                }]
+            });
+
+            // Socket events
+            ipcRenderer.on('new-data', function(sender, data) {
+                addData(data);
+            });
+            
+        })
+    </script>
+    
+</body>
+ 
+
+
+</html>

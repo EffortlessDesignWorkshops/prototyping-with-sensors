@@ -1,0 +1,49 @@
+{
+  "name": "HR-Data-Visualizer",
+  "version": "1.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "highcharts": "^5.0.14",
+    "jquery": "^3.2.1",
+    "serialport": "^5.0.0"
+  },
+  "devDependencies": {
+    "electron": "^1.6.11",
+    "electron-builder": "^19.19.1",
+    "electron-packager": "^8.7.2",
+    "electron-winstaller": "^2.6.3"
+  },
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "build": {
+    "appId": "hr-data-visualizer",
+    "category": "com.microchip.ideabuilder",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "squirrel",
+      "icon": "build/icon.ico"
+    }
+  }
+}
