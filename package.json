@@ -2,6 +2,11 @@
   "name": "hr-click-ekg-monitor",
   "version": "1.0.0",
   "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/idea-builder-demos/hr-click-ekg"
+  },
+  "license": "MIT",
   "dependencies": {
     "highcharts": "^5.0.14",
     "jquery": "^3.2.1",
@@ -20,7 +25,6 @@
   },
   "build": {
     "appId": "hr-click-ekg-monitor",
-    "category": "com.microchip.ideabuilder.ekg",
     "dmg": {
       "contents": [
         {
@@ -40,10 +44,6 @@
         "AppImage",
         "deb"
       ]
-    },
-    "win": {
-      "target": "squirrel",
-      "icon": "build/icon.ico"
     }
   }
 }
