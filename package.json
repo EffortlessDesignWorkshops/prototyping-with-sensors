@@ -1,5 +1,5 @@
 {
-  "name": "HR Click EKG Monitor",
+  "name": "hr-click-ekg-monitor",
   "version": "1.0.0",
   "main": "main.js",
   "dependencies": {
