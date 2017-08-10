@@ -1,5 +1,5 @@
 {
-  "name": "HR-Data-Visualizer",
+  "name": "HR Click EKG Monitor",
   "version": "1.0.0",
   "main": "main.js",
   "dependencies": {
@@ -19,8 +19,8 @@
     "dist": "build"
   },
   "build": {
-    "appId": "hr-data-visualizer",
-    "category": "com.microchip.ideabuilder",
+    "appId": "hr-click-ekg-monitor",
+    "category": "com.microchip.ideabuilder.ekg",
     "dmg": {
       "contents": [
         {
