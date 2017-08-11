@@ -7,6 +7,9 @@
     "name": "Garrett Scott",
     "email": "Garrett.A.Scott@gmail.com"
   },
+  "scripts": {
+    "postinstall": "electron-builder install-app-deps"
+  },
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/idea-builder-demos/hr-click-ekg"
@@ -15,11 +18,11 @@
   "dependencies": {
     "highcharts": "^5.0.14",
     "jquery": "^3.2.1",
-    "serialport": "^5.0.0"
+    "serialport": "^6.0.0-beta1"
   },
   "devDependencies": {
     "electron": "^1.6.11",
-    "electron-builder": "^19.19.1",
+    "electron-builder": "^19.20.1",
     "electron-packager": "^8.7.2",
     "electron-winstaller": "^2.6.3"
   },
