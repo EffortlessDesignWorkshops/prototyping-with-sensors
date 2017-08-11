@@ -3,3 +3,5 @@ dist/
 node_modules/
 .python-version
 build.sh
+deploy.sh
+gh_token.txt
