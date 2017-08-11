@@ -25,6 +25,8 @@
   },
   "build": {
     "appId": "hr-click-ekg-monitor",
+    "artifactName": "${productName}.${ext}",
+    "compression": "maximum",
     "dmg": {
       "contents": [
         {
