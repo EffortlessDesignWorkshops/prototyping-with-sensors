@@ -2,6 +2,11 @@
   "name": "hr-click-ekg-monitor",
   "version": "1.1.0",
   "main": "main.js",
+  "description": "A companion utility for the Microchip IdeaBuilder Workshop - Prototyping with Sensors",
+  "author": {
+    "name": "Garrett Scott",
+    "email": "Garrett.A.Scott@gmail.com"
+  },
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/idea-builder-demos/hr-click-ekg"
@@ -17,11 +22,6 @@
     "electron-builder": "^19.19.1",
     "electron-packager": "^8.7.2",
     "electron-winstaller": "^2.6.3"
-  },
-  "scripts": {
-    "postinstall": "install-app-deps",
-    "pack": "build --dir",
-    "dist": "build"
   },
   "build": {
     "appId": "hr-click-ekg-monitor",
