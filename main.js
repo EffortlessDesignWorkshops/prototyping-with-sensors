@@ -30,6 +30,7 @@ app.on('ready', function() {
   }).on('close', () => {
     mainWindow = null;
     board.closeOut();
+    app.exit()
   })
   
 });
