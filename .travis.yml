@@ -9,7 +9,7 @@ install:
   - npm install
   
 script:
-  - node_modules/.bin/electron-builder --win --mac --linux
+  - node_modules/.bin/electron-builder --mac
 
 branches:
   except:
