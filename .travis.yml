@@ -1,0 +1,35 @@
+os:
+  - osx
+  
+osx_image: xcode8.3
+language: node_js
+node_js:
+  - "8"
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install
+  
+script:
+  - electron-builder --mac --win --linux --publish=never
+
+branches:
+  only:
+    - master
+    - /^v\d+$/
+    
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file:
+    - dist/*.dmg
+    - dist/*.exe
+    - dist/*.AppImage
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: true
