@@ -17,8 +17,9 @@ script:
   - electron-builder --mac --win --linux --publish=never
 
 branches:
-  except:
-    - "/^v\\d+\\.\\d+\\.\\d+$/"
+  only:
+    - master
+    - /^v\d+$/
     
 deploy:
   provider: releases
