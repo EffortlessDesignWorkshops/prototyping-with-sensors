@@ -14,7 +14,7 @@ install:
   - npm install
   
 script:
-  - node_modules/.bin/electron-builder --mac
+  - electron-builder --mac --publish=never
 
 branches:
   except:
