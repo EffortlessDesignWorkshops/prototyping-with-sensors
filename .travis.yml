@@ -14,8 +14,21 @@ install:
   - npm install
   
 script:
-  - electron-builder --mac --publish=never
+  - electron-builder --mac --win --linux --publish=never
 
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+    
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file:
+    - dist/*.dmg
+    - dist/*.exe
+    - dist/*.AppImage
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: true
