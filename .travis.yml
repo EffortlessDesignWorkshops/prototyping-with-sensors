@@ -1,0 +1,16 @@
+osx_image: xcode8.3
+language: node_js
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install
+  
+script:
+  - node_modules/.bin/electron-builder --win --mac --linux
+
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
