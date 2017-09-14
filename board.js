@@ -1,7 +1,7 @@
 const { EventEmitter } = require('events')
 const serialport = require('serialport')
-const Readline = serialport.parsers.Readline;
-const parser = new Readline();
+const Readline = serialport.parsers.Readline
+const parser = new Readline()
 const Board = new EventEmitter()
 
 const board_config = {
@@ -16,7 +16,16 @@ function handleResponse(resp) {
 }
 
 function initialize(){
+    parser.on('data', handleResponse);
     findAndConnectXpress();
+}
+
+function setDataFlowState(resume){
+    if(resume) {
+        parser.resume()
+    } else {
+        parser.pause()
+    }
 }
 
 function closeOut() {
@@ -31,6 +40,7 @@ function closeOut() {
 }
 
 function findAndConnectXpress(selectedPorts) {
+    console.log('Checking for board...');
     serialport.list(function(e, ports) {
         ports = ports
             .map(function(port) {
@@ -43,6 +53,7 @@ function findAndConnectXpress(selectedPorts) {
             });
         if (ports.length == 0) {
             console.log('No board detected!');
+            setTimeout(findAndConnectXpress, 5000);
             return;
         }
         if (ports.length > 1) {
@@ -69,15 +80,17 @@ function chooseSerialPort(newPort) {
             baudRate: board_config.baudRate
         });
         port
-            .pipe(new Readline())
             .on('open', () => {Board.emit('board-opened')})
-            .on('data', handleResponse);
+            .on('close', closeOut)
+            .pipe(parser)
     });
 }
 
 module.exports = {
+    pollForBoard: findAndConnectXpress,
     chooseSerialPort: chooseSerialPort,
     closeOut: closeOut,
     initialize: initialize,
-    Board: Board
+    Board: Board,
+    setDataFlowState: setDataFlowState
 }
