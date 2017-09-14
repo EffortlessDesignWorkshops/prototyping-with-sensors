@@ -8,18 +8,33 @@
 </head>
 
 <body>
-    <div id="container" style="min-width: 310px; height: 100%; margin: 0 auto"></div>
+
+    <div class="row">
+        <button type="button" class="board-action" data-action-type="start-stop" disabled="disabled">Start/Stop</button>
+        <button type="button" class="chart-action" data-action-type="clear-chart">Clear Chart</button>
+        <button type="button" class="board-action" data-action-type="exit" disabled="disabled">Exit</button>
+    </div>
+    <div class="row">
+            <div id="container" style="min-width: 310px; height: 100%; margin: 0 auto"></div>
+    </div>
+
 
     <script>
         window.$ = window.jQuery = require('jquery');
         const Highcharts = require('highcharts');
-        const ipcRenderer = require('electron').ipcRenderer;
+        const {ipcRenderer} = require('electron');
         // document.write('<p>myvar: ' + remote.getGlobal('sharedObj').myvar + '</p>');
         $(document).ready(function(){
             // Initialize variables
             var connected = false;
 
             var addData = function(data) {};
+            var initSeries = function() {
+                $("#container").highcharts().series[0].setData(
+                    (new Array(500)).fill({ x: (new Date()).getTime(), y: null })
+                )
+            };
+                
             Highcharts.setOptions({
                 global: {
                     useUTC: false
@@ -60,13 +75,6 @@
                         color: '#808080'
                     }]
                 },
-                // tooltip: {
-                //     formatter: function() {
-                //         return '<b>' + this.series.name + '</b><br/>' +
-                //             Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                //             Highcharts.numberFormat(this.y, 2);
-                //     }
-                // },
                 tooltip: false,
                 legend: {
                     enabled: false
@@ -79,19 +87,33 @@
                     }
                 },
                 series: [{
-                    name: 'EKG',
-                    data: ((new Array(500)).fill({ x: (new Date()).getTime(), y: 0 }))
+                    name: 'EKG'
                 }]
             });
 
+            $(".board-action").on('click', function() {
+                ipcRenderer.send('board-action', $(this).data('action-type'))
+            })
+            $(".chart-action").on('click', function() {
+                if($(this).data('action-type') == 'clear-chart'){
+                    initSeries();
+                }
+            })
             // Socket events
-            ipcRenderer.on('new-data', function(sender, data) {
-                addData(data);
-            });
+            ipcRenderer
+                .on('new-data', function(sender, data) {
+                    addData(data);
+                })
+                .on('serial-board-status', function(sender, isConnected){
+                    console.log('Status Changed', isConnected)
+                    $(".board-action").prop('disabled', !isConnected)
+                    if(isConnected){
+                        initSeries();
+                    }
+                });
             
         })
     </script>
-    
 </body>
  
 
