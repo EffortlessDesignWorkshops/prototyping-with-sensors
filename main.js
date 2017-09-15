@@ -3,17 +3,22 @@ const serialBoard = require("./board");
 const tcpBoard = require("./tcp");
 
 let mainWindow;
-
+let pastEvents = [];
 serialBoard.initialize();
 tcpBoard.initialize(1337);
 
+function sendRendererEvent(){
+  var args = arguments
+  if(mainWindow && mainWindow.isVisible()) {
+    mainWindow.webContents.send.apply(mainWindow.webContents, args);
+  } else {
+    pastEvents.push(args);
+  }
+}
+
 function boardOpenHandler() {
   console.log('Opening Up Board...');
-  mainWindow.__newConnection = true;
-  console.log('visible?',mainWindow.isVisible());
-  if(mainWindow.isVisible()){
-    setBoardStatus(true)
-  }
+  setBoardStatus(true)
   serialBoard.Board.on('new-data', boardDataHandler);
   serialBoard.pollForBoard(false);
   tcpBoard.Board.on('new-data', boardDataHandler);
@@ -27,7 +32,9 @@ function boardCloseHandler() {
     serialBoard.pollForBoard(true);
   }
 }
-function setBoardStatus(status) { if(mainWindow) { mainWindow.webContents.send('board-status', status); mainWindow.__newConnection = false;}}
+function setBoardStatus(status) { 
+    sendRendererEvent('board-status', status);
+}
 function setupBoardEvents(){
   serialBoard.Board
     .on('board-opened', boardOpenHandler)
@@ -35,6 +42,9 @@ function setupBoardEvents(){
   tcpBoard.Board
     .on('board-opened', boardOpenHandler)
     .on('board-closed', boardCloseHandler)
+    .on('tcp-ready', (serverInfo) => {
+      sendRendererEvent('tcp-ready', serverInfo.address, serverInfo.port);
+    })
 }
 
 function exitApp(){
@@ -52,9 +62,17 @@ function toggleBoardData(){
   tcpBoard.setDataFlowState(flow);
 }
 function boardDataHandler(d) {
-  var matches = d.match(/EKG:([\-\d]+)/);
-  if(matches){
-    mainWindow.webContents.send('new-data', matches[1]);
+  // var matches = d.match(/EKG:([\-\d]+)/);
+  var num = d.slice(4); // I don't like this, but it could be faster?
+  if(num != ''){
+    sendRendererEvent('new-data', (new Date()).getTime(), +num)
+  }
+}
+
+function sendAllPastEvents(){
+  while(pastEvents.length){
+    var event = pastEvents.shift();
+    sendRendererEvent.apply(null, event);
   }
 }
 
@@ -77,15 +95,7 @@ app.on('ready', function() {
   })
 
   mainWindow
-    .once('ready-to-show', () => {
-      mainWindow.show()
-    })
-    .on('show', () => {
-      if(mainWindow.__newConnection){
-        console.log('delayed board start');
-        setBoardStatus(true);
-      }
-    })
+    .once('ready-to-show',mainWindow.show)
+    .on('show', sendAllPastEvents)
     .on('close', exitApp)
-  
 });

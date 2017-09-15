@@ -8,14 +8,15 @@
 </head>
 
 <body>
-
-    <div class="row">
-        <button type="button" class="board-action" data-action-type="start-stop" disabled="disabled">Start/Stop</button>
-        <button type="button" class="chart-action" data-action-type="clear-chart">Clear Chart</button>
-        <button type="button" class="board-action" data-action-type="exit" disabled="disabled">Exit</button>
-    </div>
-    <div class="row">
-            <div id="container" style="min-width: 310px; height: 100%; margin: 0 auto"></div>
+    <div class="box">
+        <div class="row buttons">
+            <button type="button" class="board-action board-dependent" data-action-type="start-stop" disabled="disabled">Start/Stop</button>
+            <button type="button" class="chart-action" data-action-type="clear-chart">Clear Chart</button>
+            <button type="button" class="board-action" data-action-type="exit">Exit</button>
+        </div>
+        <div class="row">
+            <div id="container"></div>
+        </div>
     </div>
 
 
@@ -28,7 +29,7 @@
             // Initialize variables
             var connected = false;
 
-            var addData = function(data) {};
+            var addData = function(time, data) {};
             var initSeries = function() {
                 $("#container").highcharts().series[0].setData(
                     (new Array(500)).fill({ x: (new Date()).getTime(), y: null })
@@ -50,10 +51,8 @@
                         load: function() {
                             // set up the updating of the chart
                             var series = this.series[0];
-                            addData = function(d) {
-                                var x = (new Date()).getTime(), // current time
-                                    y = +d;
-                                series.addPoint([x, y], true, true);
+                            addData = function(time, ekg) {
+                                series.addPoint([time, ekg], true, true);
                             };
                         }
                     }
@@ -101,15 +100,18 @@
             })
             // Socket events
             ipcRenderer
-                .on('new-data', function(sender, data) {
-                    addData(data);
+                .on('new-data', function(sender, time, ekg) {
+                    addData(time, ekg);
                 })
                 .on('board-status', function(sender, isConnected){
                     console.log('Status Changed', isConnected)
-                    $(".board-action").prop('disabled', !isConnected)
+                    $(".board-action.board-dependent").prop('disabled', !isConnected)
                     if(isConnected){
                         initSeries();
                     }
+                })
+                .on('tcp-ready', function(sender, address, port){
+                    console.log(address, port);
                 });
             
         })
