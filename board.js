@@ -10,6 +10,9 @@ const board_config = {
 
 let port
 
+let connected = false;
+let polling = true;
+
 function handleResponse(resp) {
     // console.log(resp.toString());
     Board.emit('new-data', resp.toString());
@@ -35,11 +38,15 @@ function closeOut() {
         }
     }
     port.close(function() {
+        connected = false;
         Board.emit('board-closed');
     });
 }
 
 function findAndConnectXpress(selectedPorts) {
+    if(!polling || connected){
+        return;
+    }
     console.log('Checking for board...');
     serialport.list(function(e, ports) {
         ports = ports
@@ -53,7 +60,6 @@ function findAndConnectXpress(selectedPorts) {
             });
         if (ports.length == 0) {
             console.log('No board detected!');
-            setTimeout(findAndConnectXpress, 5000);
             return;
         }
         if (ports.length > 1) {
@@ -80,14 +86,21 @@ function chooseSerialPort(newPort) {
             baudRate: board_config.baudRate
         });
         port
-            .on('open', () => {Board.emit('board-opened')})
+            .on('open', () => {connected = true; Board.emit('board-opened')})
             .on('close', closeOut)
             .pipe(parser)
     });
 }
 
+function pollForBoard(shouldPoll){
+    polling = shouldPoll;
+}
+
+
+setInterval(findAndConnectXpress, 5000);
+
 module.exports = {
-    pollForBoard: findAndConnectXpress,
+    pollForBoard: pollForBoard,
     chooseSerialPort: chooseSerialPort,
     closeOut: closeOut,
     initialize: initialize,

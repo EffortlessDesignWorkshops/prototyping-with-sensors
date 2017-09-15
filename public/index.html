@@ -104,7 +104,7 @@
                 .on('new-data', function(sender, data) {
                     addData(data);
                 })
-                .on('serial-board-status', function(sender, isConnected){
+                .on('board-status', function(sender, isConnected){
                     console.log('Status Changed', isConnected)
                     $(".board-action").prop('disabled', !isConnected)
                     if(isConnected){

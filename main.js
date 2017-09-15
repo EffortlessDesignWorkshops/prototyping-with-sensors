@@ -1,51 +1,61 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
-const board = require("./board");
+const serialBoard = require("./board");
+const tcpBoard = require("./tcp");
 
 let mainWindow;
 
-board.initialize();
+serialBoard.initialize();
+tcpBoard.initialize(1337);
 
-function setSerialBoardStatus(status) { if(mainWindow) { mainWindow.webContents.send('serial-board-status', status); mainWindow.__newSerialConnection = false;}}
-function serialBoardOpenHandler() {
+function boardOpenHandler() {
   console.log('Opening Up Board...');
-  mainWindow.__newSerialConnection = true;
+  mainWindow.__newConnection = true;
   console.log('visible?',mainWindow.isVisible());
   if(mainWindow.isVisible()){
-    setSerialBoardStatus(true)
+    setBoardStatus(true)
   }
-  board.Board.on('new-data', serialBoardDataHandler);
+  serialBoard.Board.on('new-data', boardDataHandler);
+  serialBoard.pollForBoard(false);
+  tcpBoard.Board.on('new-data', boardDataHandler);
 }
-function serialBoardDataHandler(d) {
-  var matches = d.match(/EKG:([\-\d]+)/);
-  if(matches){
-    mainWindow.webContents.send('new-data', matches[1]);
-  }
-}
-function serialBoardCloseHandler() {
+function boardCloseHandler() {
   if(mainWindow){
     console.log('Bye bye board! We will see you when you get back!')
-    setSerialBoardStatus(false);
-    board.Board.removeAllListeners('new-data')
-    board.pollForBoard();
+    setBoardStatus(false);
+    serialBoard.Board.removeAllListeners('new-data')
+    tcpBoard.Board.removeAllListeners('new-data')
+    serialBoard.pollForBoard(true);
   }
 }
-function setupSerialBoardEvents(){
-  board.Board
-    .on('board-opened', serialBoardOpenHandler)
-    .on('board-closed', serialBoardCloseHandler)
+function setBoardStatus(status) { if(mainWindow) { mainWindow.webContents.send('board-status', status); mainWindow.__newConnection = false;}}
+function setupBoardEvents(){
+  serialBoard.Board
+    .on('board-opened', boardOpenHandler)
+    .on('board-closed', boardCloseHandler)
+  tcpBoard.Board
+    .on('board-opened', boardOpenHandler)
+    .on('board-closed', boardCloseHandler)
 }
 
 function exitApp(){
   mainWindow = null;
   ipcMain.removeAllListeners('board-action');
-  board.closeOut();
+  serialBoard.closeOut();
+  tcpBoard.closeOut();
   app.exit()
 }
 
 var flow = true
 function toggleBoardData(){
   flow = !flow;
-  board.setDataFlowState(flow);
+  serialBoard.setDataFlowState(flow);
+  tcpBoard.setDataFlowState(flow);
+}
+function boardDataHandler(d) {
+  var matches = d.match(/EKG:([\-\d]+)/);
+  if(matches){
+    mainWindow.webContents.send('new-data', matches[1]);
+  }
 }
 
 const btn_action_map = {
@@ -60,7 +70,7 @@ app.on('ready', function() {
       show: false
   });
   mainWindow.loadURL('file://' + __dirname + '/public/index.html');
-  setupSerialBoardEvents();
+  setupBoardEvents();
   ipcMain.on('board-action', (event, action) => {
     console.log('From main', action);
     (btn_action_map[action] || (() => {}))();
@@ -71,9 +81,9 @@ app.on('ready', function() {
       mainWindow.show()
     })
     .on('show', () => {
-      if(mainWindow.__newSerialConnection){
+      if(mainWindow.__newConnection){
         console.log('delayed board start');
-        setSerialBoardStatus(true);
+        setBoardStatus(true);
       }
     })
     .on('close', exitApp)
