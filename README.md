@@ -1,4 +1,4 @@
-# Microchip Effortless Design Workshop: Prototyping with Sensors
+# Microchip Effortless Design Workshop: Prototyping with Sensors [![Build Status](https://travis-ci.org/EffortlessDesignWorkshops/prototyping-with-sensors.svg?branch=feature%2Ftravis-ci)](https://travis-ci.org/EffortlessDesignWorkshops/prototyping-with-sensors)
 
 ## Description
 This is a tool which will connect to an available Xpress board and display EKG data in a nice graph. This allows for both a quick view of the heart rate data as well as gives a starting place for your own projects.
