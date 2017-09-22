@@ -7,13 +7,11 @@ let server
   
 
 function handleResponse(resp) {
-    // console.log(resp.toString());
     Board.emit('new-data', resp.toString());
 }
 
 
 function initialize(port){
-    console.log()
     server = net.createServer((socket) => {
         function closeSocketHandler(){
             Board.emit('board-closed');
@@ -37,6 +35,9 @@ function initialize(port){
 }
 
 function setDataFlowState(resume){
+    if(!parser){
+        return;
+    }
     if(resume) {
         parser.resume()
     } else {
@@ -45,6 +46,9 @@ function setDataFlowState(resume){
 }
 
 function closeOut() {
+    if(!server){
+        return;
+    }
     server.close(function() {
         Board.emit('board-closed');
     });
