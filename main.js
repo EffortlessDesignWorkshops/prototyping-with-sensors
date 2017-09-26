@@ -62,10 +62,10 @@ function toggleBoardData(){
   tcpBoard.setDataFlowState(flow);
 }
 function boardDataHandler(d) {
-  // var matches = d.match(/EKG:([\-\d]+)/);
-  var num = d.slice(4); // I don't like this, but it could be faster?
-  if(num != ''){
-    sendRendererEvent('new-data', (new Date()).getTime(), +num)
+  var matches = d.match(/EKG:([\-\d]+)/);
+  if(matches && matches[1]){
+    num = +(matches[1]);
+    sendRendererEvent('new-data', (new Date()).getTime(), num)
   }
 }
 
