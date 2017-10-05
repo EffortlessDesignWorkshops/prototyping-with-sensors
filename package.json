@@ -8,7 +8,8 @@
     "email": "Garrett.A.Scott@gmail.com"
   },
   "scripts": {
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
@@ -21,8 +22,8 @@
     "serialport": "^6.0.0-beta1"
   },
   "devDependencies": {
-    "electron": "^1.6.11",
-    "electron-builder": "^19.33.0",
+    "electron": "^1.8.1",
+    "electron-builder": "^19.34.1",
     "electron-packager": "^8.7.2",
     "electron-winstaller": "^2.6.3"
   },

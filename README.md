@@ -18,14 +18,17 @@ If you want to make changes to the source, you'll need to install [NodeJS](https
 1. Clone this repository - `git clone`
 2. Move into the newly created directory - `cd`
 3. Run the install script - `npm install`
-4. Run the appllication - `electron .`
+4. Run the appllication - `npm start`
 
 ```
 git clone https://github.com/EffortlessDesignWorkshops/prototyping-with-sensors.git
 cd prototyping-with-sensors
 npm install
-electron .
+npm start
 ```
+
+If you get errors about modules not being installed, your NPM instance might be in `production` mode. If this happens run `npm install --only=dev` to install the development dependencies.
+
 ## What's used in this?
 Things that were used for this
 - [NodeJS](https://nodejs.org) - Running the code
