@@ -14,7 +14,7 @@ install:
   - npm install
   
 script:
-  - electron-builder --mac --win --linux --publish=never
+  - npm build
 
 branches:
   only:

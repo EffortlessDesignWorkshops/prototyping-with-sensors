@@ -9,7 +9,9 @@
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder --windows --mac=\"dmg\" --linux=\"tar.gz\" --publish=\"never\"",
+    "publish": "electron-builder --windows --mac=\"dmg\" --linux=\"tar.gz\" --publish=\"always\""
   },
   "repository": {
     "type": "git",
@@ -38,7 +40,7 @@
           "y": 150
         },
         {
-          "x": 240,
+          "x": 340,
           "y": 150,
           "type": "link",
           "path": "/Applications"
