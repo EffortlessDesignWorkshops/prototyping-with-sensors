@@ -2,7 +2,7 @@
   "name": "hr-click-ekg-monitor",
   "version": "1.4.1",
   "main": "main.js",
-  "description": "A companion utility for the Microchip IdeaBuilder Workshop - Prototyping with Sensors",
+  "description": "A companion utility for the Microchip Effortless Design Workshop - Prototyping with Sensors",
   "author": {
     "name": "Garrett Scott",
     "email": "Garrett.A.Scott@gmail.com"
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IdeaBuilderWorkshop/prototyping-with-sensors"
+    "url": "https://github.com/EffortlessDesignWorkshops/prototyping-with-sensors"
   },
   "license": "MIT",
   "dependencies": {
