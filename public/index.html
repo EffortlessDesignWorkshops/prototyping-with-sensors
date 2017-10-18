@@ -17,6 +17,12 @@
         <div class="row">
             <div id="container"></div>
         </div>
+        <div class="row">
+            <div id="heartrateContainer" class="wrapper" style="display: none;">
+                <img id="heart" class="pulse centered" src="./hr.png" width="100px">
+                <span id="heartrate" class="pulse centered"></span>
+            </div>
+        </div>
     </div>
 
 
@@ -28,6 +34,7 @@
         $(document).ready(function(){
             // Initialize variables
             var connected = false;
+            var oldHR = 0;
 
             var addData = function(time, data) {};
             var initSeries = function() {
@@ -102,6 +109,15 @@
             ipcRenderer
                 .on('new-data', function(sender, time, ekg) {
                     addData(time, ekg);
+                })
+                .on('hr-change', function(sender, hr){
+                    $("#heartrateContainer").show();
+                    var newHR = 60 / (hr || 1000);
+                    $("#heartrate").text(hr+" BPM");
+                    if(Math.abs(oldHR - hr) > 5){
+                        $(".pulse").css('animation-duration', newHR+'s');
+                        oldHR = hr;
+                    }
                 })
                 .on('board-status', function(sender, isConnected){
                     console.log('Status Changed', isConnected)

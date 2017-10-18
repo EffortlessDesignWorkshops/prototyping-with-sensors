@@ -45,3 +45,38 @@ ul {
     height: 100%; 
     margin: 0 auto;
 }
+  
+@keyframes heartFadeInOut {
+    0% {font-size: large; transform: translate(-50%, -50%) scale(1);}
+    25% {font-size: larger; transform: translate(-50%, -50%) scale(1.1);}
+    50% {font-size: medium; transform: translate(-50%, -50%) scale(.9);}
+    75% {font-size: larger; transform: translate(-50%, -50%) scale(1.1);}
+    100% {font-size: large; transform: translate(-50%, -50%) scale(1);}
+
+}
+
+.pulse { 
+    animation-name: heartFadeInOut; 
+    animation-iteration-count: infinite;
+    animation-duration: 15s;
+}
+#heartrate {
+    color: white;
+    font-weight: bold;
+    font-size: larger;
+    transform: translate(-50%, -70%) !important;
+}
+
+div.wrapper{
+	float:left; /* important */
+    position:relative; /* important(so we can absolutely position the description div */
+    width: 100%;
+}
+
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

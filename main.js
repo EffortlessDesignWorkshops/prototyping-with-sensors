@@ -56,6 +56,7 @@ function exitApp(){
 }
 
 var flow = true
+var currHR = 0;
 function toggleBoardData(){
   flow = !flow;
   serialBoard.setDataFlowState(flow);
@@ -64,8 +65,16 @@ function toggleBoardData(){
 function boardDataHandler(d) {
   var matches = d.match(/EKG:([\-\d]+)/);
   if(matches && matches[1]){
-    num = +(matches[1]);
+    var num = +(matches[1]);
     sendRendererEvent('new-data', (new Date()).getTime(), num)
+  }
+  matches = d.match(/HR:(\d+)/);
+  if(matches && matches[1]){
+    var newHR = +(matches[1]);
+    if(newHR != currHR){
+      sendRendererEvent('hr-change', newHR)
+      currHR = newHR;
+    }
   }
 }
 
