@@ -124,6 +124,8 @@
                     $(".board-action.board-dependent").prop('disabled', !isConnected)
                     if(isConnected){
                         initSeries();
+                    } else {
+                        $("#heartrateContainer").hide();
                     }
                 })
                 .on('tcp-ready', function(sender, address, port){
